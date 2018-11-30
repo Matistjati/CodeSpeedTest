@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TemplateContent>
+	<ProjectItem
+		ReplaceParameters="true"
+		TargetFileName="$projectname$.exe">
+		Test.cs
+	</ProjectItem>
+</TemplateContent>
