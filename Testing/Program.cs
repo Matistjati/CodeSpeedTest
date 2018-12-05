@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpeedTesting.Tests
 {
@@ -22,7 +20,7 @@ namespace SpeedTesting.Tests
 			Stopwatch testRunTime = Stopwatch.StartNew();
 
 			// Doing the tests
-			results.AddRange(InstantieateClass.DoTest(timesToRunTests));
+			results.AddRange(ArrayIndexing.DoTest(timesToRunTests));
 
 			testRunTime.Stop();
 

@@ -83,6 +83,16 @@ namespace SpeedTesting.Tests
 			yield return SpeedTester.Finish();
 
 
+			SpeedTester.Start("Compiled lambda null args");
+
+			for (long i = 0; i < timesToRun; i++)
+			{
+				TestClass test = noArgs.Invoke(null);
+			}
+
+			yield return SpeedTester.Finish();
+
+
 			SpeedTester.Start("Compiled lambda with args");
 
 			for (long i = 0; i < timesToRun; i++)
