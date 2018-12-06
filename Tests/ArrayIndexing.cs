@@ -82,6 +82,18 @@ namespace SpeedTesting.Tests
 
 
 
+			SpeedTester.Start("Foreach get");
+
+			for (long i = 0; i < timesToRun; i++)
+			{
+				foreach (int o in array)
+				{
+
+				}
+			}
+
+			yield return SpeedTester.Finish();
+
 
 
 
@@ -134,6 +146,14 @@ namespace SpeedTesting.Tests
 			IterateUnsafeSet(timesToRun);
 
 			yield return SpeedTester.Finish();
+
+
+
+
+
+
+
+
 
 
 

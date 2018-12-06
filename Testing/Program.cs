@@ -20,7 +20,7 @@ namespace SpeedTesting.Tests
 			Stopwatch testRunTime = Stopwatch.StartNew();
 
 			// Doing the tests
-			results.AddRange(ArrayIndexing.DoTest(timesToRunTests));
+			results.AddRange(SmallerToLargerArray.DoTest(timesToRunTests));
 
 			testRunTime.Stop();
 

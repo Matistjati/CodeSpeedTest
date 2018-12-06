@@ -52,6 +52,7 @@
     <Compile Include="Testing\TestResult.cs" />
     <Compile Include="Tests\ArrayIndexing.cs" />
     <Compile Include="Tests\InstantieateClass.cs" />
+    <Compile Include="Tests\SmallerToLargerArray.cs" />
     <Compile Include="Tests\StringAppend.cs" />
   </ItemGroup>
   <ItemGroup>
