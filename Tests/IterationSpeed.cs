@@ -104,6 +104,19 @@ namespace SpeedTesting
 			}
 
 			yield return SpeedTester.Finish();
+
+
+
+
+			SpeedTester.Start("Iterating for loop cache");
+
+			for (long a = 0; a < timesToRun; a++)
+			{
+				IterateforCache();
+			}
+
+			yield return SpeedTester.Finish();
+
 			filledRows.Clear();
 		}
 
@@ -151,6 +164,58 @@ namespace SpeedTesting
 							: spritePositions[i].X;
 
 						filledRows[(ushort)index] = new Distance(positiveX, spritePositions[i].Width);
+					}
+				}
+			}
+		}
+
+
+		static void IterateforCache()
+		{
+			for (int i = 0; i < spritePositions.Count; i++)
+			{
+				SmallRectangle currentRect = spritePositions[i];
+
+				for (short y = 0; y < currentRect.Height; y++)
+				{
+					short index = (short)(currentRect.Y + y);
+					// spritePositions[i].Y + y (spritePositions[i].Y might be negative)
+					if (index < 0)
+						continue;
+
+					if (filledRows.TryGetValue((ushort)index, out Distance currentRow))
+					{
+						if (currentRect.X < currentRow.start && currentRect.X > 0)
+						{
+							currentRow.length += currentRow.start - currentRect.X;
+
+							currentRow.start = currentRect.X;
+						}
+						else
+						{
+							currentRow.length += currentRect.X - currentRow.start;
+
+							if (currentRow.length + currentRow.start > displaySize.X)
+							{
+								currentRow.length = displaySize.X - currentRow.start;
+							}
+						}
+
+						// Enable if we want to use sprites of different sizes
+						if (currentRect.Width > currentRow.length)
+						{
+							currentRow.length = currentRect.Width;
+						}
+
+						filledRows[(ushort)index] = currentRow;
+					}
+					else
+					{
+						int positiveX = (currentRect.X < 0)
+							? 0
+							: currentRect.X;
+
+						filledRows[(ushort)index] = new Distance(positiveX, currentRect.Width);
 					}
 				}
 			}

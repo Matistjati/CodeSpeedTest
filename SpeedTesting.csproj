@@ -45,8 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CacheVsDirect.cs" />
-    <Compile Include="IterationSpeed.cs" />
+    <Compile Include="Tests\CacheVsDirect.cs" />
+    <Compile Include="Tests\DistanceSpeed.cs" />
+    <Compile Include="Tests\IterationOffset.cs" />
+    <Compile Include="Tests\IterationSpeed.cs" />
     <Compile Include="Testing\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Testing\SpeedTester.cs" />
@@ -56,7 +58,7 @@
     <Compile Include="Tests\InstantieateClass.cs" />
     <Compile Include="Tests\SmallerToLargerArray.cs" />
     <Compile Include="Tests\StringAppend.cs" />
-    <Compile Include="WriteConsole.cs" />
+    <Compile Include="Tests\WriteConsole.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

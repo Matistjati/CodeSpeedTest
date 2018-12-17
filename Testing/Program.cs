@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace SpeedTesting.Tests
 {
 	class Program
 	{
-		static readonly long timesToRunTests = 50000;
+		static readonly long timesToRunTests = 5000000;
 		static readonly int decimals = 3;
 		static readonly bool diplayAverageTime = true;
 
@@ -21,7 +20,7 @@ namespace SpeedTesting.Tests
 			Stopwatch testRunTime = Stopwatch.StartNew();
 
 			// Doing the tests
-			results.AddRange(IterationSpeed.DoTest(timesToRunTests));
+			results.AddRange(DistanceSpeed.DoTest(timesToRunTests));
 
 			testRunTime.Stop();
 
