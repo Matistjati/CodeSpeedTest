@@ -21,14 +21,15 @@ namespace SpeedTesting
 			timer = Stopwatch.StartNew();
 		}
 
-		public static TestResult Finish()
+		public static TimeStamp Finish()
 		{
 			if (!isRunning)
 				throw new Exception("Cannot return a result when no timer is running");
 
 
 			isRunning = false;
-			return new TestResult(testName, timer.Elapsed.TotalSeconds);
+			// Temp
+			return new TimeStamp(new TimeSpan(), 0);
 		}
 	}
 }

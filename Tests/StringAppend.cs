@@ -10,7 +10,7 @@ namespace SpeedTesting.Tests
 		const string escapeEnd = "m█";
 		const char colorSeparator = ';';
 
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			byte r = 155;
 			byte g = 250;

@@ -11,7 +11,7 @@ namespace SpeedTesting.Tests
 		static int[,] array = new int[10, 10];
 		static int[,] sourceArray = new int[5, 5];
 
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			// Filling the arrays
 			for (int x = 0; x < array.GetLength(0); x++)

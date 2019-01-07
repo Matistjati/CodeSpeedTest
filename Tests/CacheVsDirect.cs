@@ -4,7 +4,7 @@ namespace SpeedTesting
 {
 	class CacheVsDirect
 	{
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			string[,] array = new string[10, 10];
 

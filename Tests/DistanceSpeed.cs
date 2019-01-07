@@ -6,7 +6,7 @@ namespace SpeedTesting.Tests
 	class DistanceSpeed
 	{
 		static bool insideCircumference;
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			int x1 = 10;
 			int y1 = 240;
@@ -71,6 +71,26 @@ namespace SpeedTesting.Tests
 				int yDifference = y1 - y2;
 
 				double distance = (xDifference * xDifference) + (yDifference * yDifference);
+
+				if (distance <= radiusSquared)
+				{
+					insideCircumference = true;
+				}
+				else
+				{
+					insideCircumference = false;
+				}
+			}
+
+			yield return SpeedTester.Finish();
+
+
+
+			SpeedTester.Start("Optimized formula no pow or sqrt minor change");
+
+			for (long i = 0; i < timesToRun; i++)
+			{
+				double distance = (x1 - x2 * x1 - x2) + (y1 - y2 * y1 - y2);
 
 				if (distance <= radiusSquared)
 				{

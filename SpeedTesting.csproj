@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,19 +46,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainsSpeed.cs" />
+    <Compile Include="Testing\ConsoleExtensions.cs" />
+    <Compile Include="Testing\MathHelper.cs" />
+    <Compile Include="Testing\Testable.cs" />
     <Compile Include="Tests\CacheVsDirect.cs" />
     <Compile Include="Tests\DistanceSpeed.cs" />
     <Compile Include="Tests\IterationOffset.cs" />
     <Compile Include="Tests\IterationSpeed.cs" />
-    <Compile Include="Testing\Program.cs" />
+    <Compile Include="Testing\TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Testing\SpeedTester.cs" />
-    <Compile Include="Testing\Test.cs" />
-    <Compile Include="Testing\TestResult.cs" />
+    <Compile Include="Tests\SpeedTester.cs" />
+    <Compile Include="Testing\TimeStamp.cs" />
     <Compile Include="Tests\ArrayIndexing.cs" />
     <Compile Include="Tests\InstantieateClass.cs" />
+    <Compile Include="Tests\Sample.cs" />
     <Compile Include="Tests\SmallerToLargerArray.cs" />
     <Compile Include="Tests\StringAppend.cs" />
+    <Compile Include="Tests\StringJoin.cs" />
+    <Compile Include="Testing\TestMaster.cs" />
+    <Compile Include="Testing\TestType.cs" />
     <Compile Include="Tests\WriteConsole.cs" />
   </ItemGroup>
   <ItemGroup>

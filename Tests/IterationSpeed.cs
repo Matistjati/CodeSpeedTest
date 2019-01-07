@@ -67,7 +67,7 @@ namespace SpeedTesting
 
 		static Dictionary<int, Distance> filledRows = new Dictionary<int, Distance>(40);
 
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			// sample data
 			spritePositions.Add(new SmallRectangle(458, -22, 108, 108));

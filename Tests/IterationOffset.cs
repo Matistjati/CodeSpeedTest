@@ -33,7 +33,7 @@ namespace SpeedTesting.Tests
 		static readonly string[,] colors = new string[1920, 1080];
 		static List<SmallRectangle> spritePositions = new List<SmallRectangle>(40);
 
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			// Sample data 
 			spritePositions.Add(new SmallRectangle(458, 0, 108, 108));

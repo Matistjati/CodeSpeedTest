@@ -24,7 +24,7 @@ namespace SpeedTesting.Tests
 
 	class InstantieateClass
 	{
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			SpeedTester.Start("Standard new no params");
 

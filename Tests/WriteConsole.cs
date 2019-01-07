@@ -29,7 +29,7 @@ namespace SpeedTesting
 			IntPtr lpReservedMustBeNull);
 
 		static string[,] sampleStrings = new string[100, 40];
-		public static IEnumerable<TestResult> DoTest(long timesToRun)
+		public static IEnumerable<TimeStamp> DoTest(long timesToRun)
 		{
 			// Filling sampleStrings with random strings
 			Random random = new Random();
