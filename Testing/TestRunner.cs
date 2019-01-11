@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Reflection;
-using static SpeedTesting.Testing.MathHelper;
 
 namespace SpeedTesting.Testing
 {
@@ -16,7 +15,7 @@ namespace SpeedTesting.Testing
 
 		public static int decimalDigitsRounding = 3;
 		public static string TestName;
-		public static TestType testType = TestType.None;
+
 		// The list will be the timestamps
 		static Dictionary<Testable, List<TimeStamp>> tests = new Dictionary<Testable, List<TimeStamp>>();
 
@@ -46,53 +45,39 @@ namespace SpeedTesting.Testing
 
 			Console.WriteLine($"Estimated test time: {(timesToPerformAllTests * 10000000 * (maxIterationTime / tests.Count) * totalTime * 5 * tests.Count).ToString("0.00")}\n\n\n");
 
-			switch (testType)
+			TimeSpan executionTime = ExecuteTests();
+
+			if (tests.Count == 0)
 			{
-				case TestType.Comparison:
-					TimeSpan totalExecutionTime = CompareTwoTests();
-					WriteResultTwoTests(totalExecutionTime);
-					break;
+				throw new Exception("No tests have been added");
+			}
+			else if (tests.Count == 1)
+			{
 
-				case TestType.ComparisonMultiple:
-				case TestType.BenchMarkSingle:
-					throw new NotImplementedException("Not implemented yet");
-
-				case TestType.None:
-				default:
-					throw new Exception("testType Was not set in TestRunner");
+			}
+			else if (tests.Count == 2)
+			{
+				WriteResultTwoTests(executionTime);
+			}
+			else
+			{
+				WriteResultMultipleTests(executionTime);
 			}
 
 			Console.ReadKey();
 		}
 
 
-		static TimeSpan CompareTwoTests()
+		static TimeSpan ExecuteTests()
 		{
-			if (tests.Count != 2)
-			{
-				throw new ArgumentException($"Tests count was not 2 while testType was set to comparison of two");
-			}
+			double maxIterationTimeWeighted = maxIterationTime / tests.Count;
 
-			double maxIterationTimeTwo = maxIterationTime / 2;
-
-			return CompareTests(maxIterationTimeTwo);
-		}
-
-		static TimeSpan CompareMultipleTests()
-		{
-			if (tests.Count == 0)
-			{
-				throw new ArgumentException($"No tests exist");
-			}
-
-			double maxIterationTimeMultiple = maxIterationTime / tests.Count;
-
-			return CompareTests(maxIterationTimeMultiple);
-		}
-
-		static TimeSpan CompareTests(double maxIterationTime)
-		{
 			Stopwatch testRunTime = Stopwatch.StartNew();
+
+			Stopwatch testTimer = new Stopwatch();
+
+			// Keep compiler from optimizing away function contents
+			double _ = 0;
 
 			for (int l = 0; l < timesToPerformAllTests; l++)
 			{
@@ -109,21 +94,34 @@ namespace SpeedTesting.Testing
 						count *= 2;
 						for (int j = 0; j < n; j++)
 						{
-							Stopwatch timer = Stopwatch.StartNew();
+							testTimer.Reset();
+							testTimer.Start();
 							for (int i = 0; i < count; i++)
 							{
-								test.Key.test();
+								// Keep compiler from optimizing away function contents
+								_ += test.Key.test();
 							}
-							TimeSpan elapsed = timer.Elapsed;
+							TimeSpan elapsed = testTimer.Elapsed;
 
 							runTime += elapsed.TotalSeconds;
-							test.Value.Add(new TimeStamp(timer.Elapsed, count));
+							test.Value.Add(new TimeStamp(elapsed, count));
 						}
-					} while (runTime < maxIterationTime && count < int.MaxValue / 2);
+					} while (runTime < maxIterationTimeWeighted && count < int.MaxValue / 2);
 				}
 			}
 
 			testRunTime.Stop();
+
+			// Keep compiler from optimizing away function contents
+			if (!File.Exists("Temp.txt"))
+			{
+				using (FileStream file = File.Create("Temp.txt"))
+				{
+					file.Write(BitConverter.GetBytes(_), 0, 8);
+				}
+				File.Delete("Temp.txt");
+			}
+
 			return testRunTime.Elapsed;
 		}
 
@@ -174,11 +172,11 @@ namespace SpeedTesting.Testing
 				new ColorArgument(0, fastestName.Length, ConsoleColor.Green));
 
 
-			ConsoleExtensions.WriteColor(fastestTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00"), 
+			ConsoleExtensions.WriteColor(fastestTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00"),
 				new ColorArgument(0, "0.".Length + decimalDigitsRounding + "E00".Length, ConsoleColor.White));
 
 			string standardDeviationS = StdDevTest1.ToString("0." + new string('0', decimalDigitsRounding) + "E00");
-			ConsoleExtensions.WriteColor($", sdev: {standardDeviationS}", 
+			ConsoleExtensions.WriteColor($", sdev: {standardDeviationS}",
 				new ColorArgument(", sdev: ".Length, standardDeviationS.Length, ConsoleColor.White));
 
 			double deltaExecTime = (slowestTime - fastestTime);
@@ -198,7 +196,7 @@ namespace SpeedTesting.Testing
 				new ColorArgument(0, slowestName.Length, ConsoleColor.Red));
 
 
-			ConsoleExtensions.WriteColor(slowestTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00"), 
+			ConsoleExtensions.WriteColor(slowestTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00"),
 				new ColorArgument(0, "0.".Length + decimalDigitsRounding + "E00".Length, ConsoleColor.White));
 
 			string standardDeviationS2 = StdDevTest2.ToString("0." + new string('0', decimalDigitsRounding) + "E00");
@@ -207,6 +205,61 @@ namespace SpeedTesting.Testing
 
 			string deltaExecTimeP2 = Math.Floor((deltaExecTime / slowestTime) * 100) + "%";
 			ConsoleExtensions.WriteColor($", dp: {deltaExecTimeP2}", new ColorArgument(prefixLength, deltaExecTimeP2.Length, ConsoleColor.White));
+
+			Console.Write($"\n\n\n\n{tests.Count} tests performed in {testRunTime.TotalSeconds.ToString("0.00")} seconds");
+			Console.Write($"\n\nPress any key to exit");
+		}
+
+		static void WriteResultMultipleTests(TimeSpan testRunTime)
+		{
+			List<TestInfo> testInfos = new List<TestInfo>();
+
+			foreach (KeyValuePair<Testable, List<TimeStamp>> testResult in tests)
+			{
+				(double mean, double StdDev) = testResult.Value.StdDevAndMean();
+				testInfos.Add(new TestInfo(StdDev, mean, testResult.Key.name));
+			}
+
+			testInfos.Sort();
+
+			int maxNameSpacing = testInfos.Max(x => x.name.Length) + 1;
+
+			Console.WriteLine($"Legend:");
+			ConsoleExtensions.WriteColorLine($"mt:   Mean execution time in seconds", new ColorArgument(0, "mt".Length, ConsoleColor.White));
+			ConsoleExtensions.WriteColorLine($"sdev: Standard deviation in seconds", new ColorArgument(0, "sdev".Length, ConsoleColor.White));
+			ConsoleExtensions.WriteColorLine($"dm:   Delta mean execution time in seconds (Compared to the test below)", new ColorArgument(0, "dm".Length, ConsoleColor.White));
+			ConsoleExtensions.WriteColorLine($"dp:   Delta execution time in percent (Compared to the test below)", new ColorArgument(0, "dp".Length, ConsoleColor.White));
+			ConsoleExtensions.WriteColorLine($"{TestName}:\n", new ColorArgument(0, TestName.Length, ConsoleColor.White));
+
+			const int prefixLength = 6; // ", dp: " or ", dm: " length
+
+
+			for (int i = 0; i < testInfos.Count; i++)
+			{
+				TestInfo test = testInfos[i];
+				// Fastestname colored green and some spacing
+				ConsoleExtensions.WriteColor($"{test.name},{new string(' ', maxNameSpacing - test.name.Length)}mt: ",
+					new ColorArgument(0, test.name.Length, ConsoleColor.White));
+
+				ConsoleExtensions.WriteColor(test.meanTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00"),
+					new ColorArgument(0, "0.".Length + decimalDigitsRounding + "E00".Length, ConsoleColor.White));
+
+				string standardDeviationS = test.stdDev.ToString("0." + new string('0', decimalDigitsRounding) + "E00");
+				ConsoleExtensions.WriteColor($", sdev: {standardDeviationS}",
+					new ColorArgument(", sdev: ".Length, standardDeviationS.Length, ConsoleColor.White));
+
+				if (i != testInfos.Count - 1)
+				{
+					double deltaExecTime = (testInfos[i + 1].meanTime - test.meanTime);
+
+
+					string deltaExecTimeP = Math.Floor((deltaExecTime / test.meanTime) * 100) + "%";
+					ConsoleExtensions.WriteColor($", dp: {deltaExecTimeP}", new ColorArgument(prefixLength, deltaExecTimeP.Length, ConsoleColor.White));
+
+					string deltaExecTimeS = deltaExecTime.ToString("0." + new string('0', decimalDigitsRounding) + "E00");
+					ConsoleExtensions.WriteColorLine($", dm: {deltaExecTimeS}", new ColorArgument(prefixLength, deltaExecTimeS.Length, ConsoleColor.White));
+				}
+			}
 
 			Console.Write($"\n\n\n\n{tests.Count} tests performed in {testRunTime.TotalSeconds.ToString("0.00")} seconds");
 			Console.Write($"\n\nPress any key to exit");

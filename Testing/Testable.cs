@@ -5,12 +5,12 @@ namespace SpeedTesting.Testing
 	class Testable
 	{
 		public readonly Action testSetup;
-		public readonly Action test;
-		public readonly String name;
+		public readonly Func<double> test;
+		public readonly string name;
 
-		public Testable(string Name, Action Test) : this(Name, Test, null) { }
+		public Testable(string Name, Func<double> Test) : this(Name, Test, null) { }
 
-		public Testable(string Name, Action Test, Action TestSetup)
+		public Testable(string Name, Func<double> Test, Action TestSetup)
 		{
 			if (Test is null)
 			{
